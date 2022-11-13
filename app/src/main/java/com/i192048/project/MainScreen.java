@@ -7,14 +7,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.i192048.project.Adapters.MainScreenAdapter;
@@ -25,6 +27,13 @@ import com.i192048.project.Fragments.ParathasFragment;
 import com.i192048.project.Fragments.PastasFragment;
 import com.i192048.project.Fragments.PizzaFragment;
 import com.i192048.project.Fragments.ShwarmaFragment;
+import com.i192048.project.NavBActivity.CartActivity;
+import com.i192048.project.NavBActivity.FavoritesActivity;
+import com.i192048.project.NavBActivity.SearchActivity;
+import com.i192048.project.NavDActivity.ChangePasswordA;
+import com.i192048.project.NavDActivity.ContactUsA;
+import com.i192048.project.NavDActivity.EditProfileA;
+import com.i192048.project.NavDActivity.MyOrdersA;
 
 public class MainScreen extends AppCompatActivity {
 
@@ -34,6 +43,7 @@ public class MainScreen extends AppCompatActivity {
     ActionBarDrawerToggle toggle;
     TabLayout tabLayout;
     ViewPager viewPager;
+    BottomNavigationView bottomNavigationView;
 
 
     @Override
@@ -47,11 +57,11 @@ public class MainScreen extends AppCompatActivity {
         navigationView = findViewById(R.id.nav_view);
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
-
+        bottomNavigationView = findViewById(R.id.bottom_nav);
         /* Hooks End */
 
 
-       toggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        toggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.bringToFront();
@@ -61,7 +71,6 @@ public class MainScreen extends AppCompatActivity {
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainScreen.this,"clicked",Toast.LENGTH_SHORT).show();
                 if(drawerLayout.isDrawerOpen(Gravity.LEFT))
                     drawerLayout.closeDrawer(Gravity.LEFT);
                 else
@@ -69,22 +78,8 @@ public class MainScreen extends AppCompatActivity {
             }
         });
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                drawerLayout.closeDrawers();
-                int itemId = item.getItemId();
-
-                if(itemId==R.id.edit_profile){
-                    Toast.makeText(MainScreen.this,"edit profile clicked",Toast.LENGTH_SHORT).show();
-                }
-
-                return false;
-            }
-        });
-
-
-
+        setBottomNavView();
+        setDrawerNavView();
     }
 
     private void setViewPagerWithTab(){
@@ -101,10 +96,70 @@ public class MainScreen extends AppCompatActivity {
         viewPager.setAdapter(mainScreenAdapter);
     }
 
+
+    private void setDrawerNavView(){
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                drawerLayout.closeDrawers();
+                int itemId = item.getItemId();
+
+                switch (item.getItemId()){
+
+                    case R.id.edit_profile:
+                        startActivity(new Intent(MainScreen.this, EditProfileA.class));
+                        return true;
+                    case R.id.my_orders:
+                        startActivity(new Intent(MainScreen.this, MyOrdersA.class));
+                        return true;
+                    case R.id.pswd_change:
+                        startActivity(new Intent(MainScreen.this, ChangePasswordA.class));
+                        return true;
+                    case R.id.contact_us:
+                        startActivity(new Intent(MainScreen.this, ContactUsA.class));
+                        return true;
+                    case R.id.logout:
+                        startActivity(new Intent(MainScreen.this,Login.class));
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
+
+    private void setBottomNavView(){
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+//                    case R.id.home:
+//                        Intent intent = new Intent(MainScreen.this, MainScreen.class);
+//                        startActivity(intent);
+//                        return true;
+                    case R.id.liked:
+                        Intent intent3 = new Intent(MainScreen.this, FavoritesActivity.class);
+                        startActivity(intent3);
+                        return true;
+                    case R.id.search:
+                        Intent intent1 = new Intent(MainScreen.this, SearchActivity.class);
+                        startActivity(intent1);
+                        return true;
+                    case R.id.cart:
+                        Intent intent2 = new Intent(MainScreen.this, CartActivity.class);
+                        startActivity(intent2);
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(toggle.onOptionsItemSelected(item))
             return true;
         return super.onOptionsItemSelected(item);
     }
+
+
 }

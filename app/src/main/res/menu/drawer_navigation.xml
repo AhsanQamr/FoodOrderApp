@@ -11,10 +11,6 @@
                 android:title="My Orders"
                 android:id="@+id/my_orders"
                 android:icon="@drawable/my_orders"/>
-            <item
-                android:title="My Addresses"
-                android:id="@+id/my_address"
-                android:icon="@drawable/white_home"/>
         </menu>
     </item>
 

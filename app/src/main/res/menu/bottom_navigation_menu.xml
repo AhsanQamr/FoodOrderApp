@@ -24,7 +24,7 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/profile"
+        android:id="@+id/cart"
         android:enabled="true"
         android:icon="@drawable/cart"
         android:title="Your Cart"
