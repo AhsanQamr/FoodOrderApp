@@ -29,6 +29,8 @@ public class Login extends AppCompatActivity {
     EditText email,password;
     FirebaseAuth mAuth;
     ProgressDialog progressDialog;
+    Button forgotPassword;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +44,19 @@ public class Login extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Logging in");
-        //progressDialog.setMessage("Please wait while we create your account");
+        forgotPassword = findViewById(R.id.forgot_password);
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 loginUser();
+            }
+        });
+
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Login.this,ForgotPassword.class));
             }
         });
 

@@ -127,8 +127,17 @@
 
         </LinearLayout>
 
-
-
+        <Button
+            android:id="@+id/forgot_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/black"
+            android:layout_marginHorizontal="20dp"
+            android:textColor="@color/white"
+            android:text="Forgot Password? Click to reset."
+            android:textAllCaps="false"
+            android:layout_gravity="center"
+            android:layout_margin="15dp"/>
 
     </LinearLayout>
 

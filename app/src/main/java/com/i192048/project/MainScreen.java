@@ -123,7 +123,6 @@ public class MainScreen extends AppCompatActivity {
                         return true;
                     case R.id.logout:
                         logoutFunctionality();
-                        //return true;
                 }
                 return false;
             }
