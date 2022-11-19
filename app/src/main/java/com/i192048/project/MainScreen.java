@@ -7,8 +7,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.i192048.project.Adapters.MainScreenAdapter;
 import com.i192048.project.Fragments.AddonsFragment;
 import com.i192048.project.Fragments.BurgerFragment;
@@ -119,8 +122,8 @@ public class MainScreen extends AppCompatActivity {
                         startActivity(new Intent(MainScreen.this, ContactUsA.class));
                         return true;
                     case R.id.logout:
-                        startActivity(new Intent(MainScreen.this,Login.class));
-                        return true;
+                        logoutFunctionality();
+                        //return true;
                 }
                 return false;
             }
@@ -132,10 +135,6 @@ public class MainScreen extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
-//                    case R.id.home:
-//                        Intent intent = new Intent(MainScreen.this, MainScreen.class);
-//                        startActivity(intent);
-//                        return true;
                     case R.id.liked:
                         Intent intent3 = new Intent(MainScreen.this, FavoritesActivity.class);
                         startActivity(intent3);
@@ -159,6 +158,12 @@ public class MainScreen extends AppCompatActivity {
         if(toggle.onOptionsItemSelected(item))
             return true;
         return super.onOptionsItemSelected(item);
+    }
+
+    private void logoutFunctionality(){
+        FirebaseAuth.getInstance().signOut();
+        onBackPressed();
+        finish();
     }
 
 
