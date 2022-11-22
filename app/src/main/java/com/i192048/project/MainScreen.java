@@ -37,6 +37,7 @@ import com.i192048.project.NavDActivity.ChangePasswordA;
 import com.i192048.project.NavDActivity.ContactUsA;
 import com.i192048.project.NavDActivity.EditProfileA;
 import com.i192048.project.NavDActivity.MyOrdersA;
+import com.i192048.project.NavDActivity.SeeProfile;
 
 public class MainScreen extends AppCompatActivity {
 
@@ -108,7 +109,9 @@ public class MainScreen extends AppCompatActivity {
                 int itemId = item.getItemId();
 
                 switch (item.getItemId()){
-
+                    case R.id.see_profile:
+                        startActivity(new Intent(MainScreen.this, SeeProfile.class));
+                        return true;
                     case R.id.edit_profile:
                         startActivity(new Intent(MainScreen.this, EditProfileA.class));
                         return true;

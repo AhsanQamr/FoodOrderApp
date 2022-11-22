@@ -102,4 +102,12 @@ public class Login extends AppCompatActivity {
                     });
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mAuth.getCurrentUser() != null){
+            startActivity(new Intent(Login.this,MainScreen.class));
+        }
+    }
 }

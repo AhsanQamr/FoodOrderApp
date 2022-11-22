@@ -4,6 +4,10 @@
     <item android:title="Personal">
         <menu>
             <item
+                android:title="See Profile"
+                android:id="@+id/see_profile"
+                android:icon="@drawable/profile"/>
+            <item
                 android:title="Edit Profile"
                 android:id="@+id/edit_profile"
                 android:icon="@drawable/edit"/>

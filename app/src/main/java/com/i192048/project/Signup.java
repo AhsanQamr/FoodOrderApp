@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,6 +22,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.i192048.project.Modals.User;
 
 public class Signup extends AppCompatActivity {
 
@@ -58,6 +61,7 @@ public class Signup extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 createUser();
+                addUserToDB();
             }
         });
 
@@ -116,6 +120,28 @@ public class Signup extends AppCompatActivity {
                     });
         }
 
+
+    }
+
+    private void addUserToDB(){
+        UserDBHandler userDBHandler = new UserDBHandler(Signup.this);
+        SQLiteDatabase database = userDBHandler.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(UserContract.Project._NAME,name.getText().toString());
+        cv.put(UserContract.Project._USERNAME,username.getText().toString());
+        cv.put(UserContract.Project._PHONE,phone.getText().toString());
+        cv.put(UserContract.Project._ADDRESS,address.getText().toString());
+        cv.put(UserContract.Project._EMAIL,email.getText().toString());
+        cv.put(UserContract.Project._PASSWORD,password.getText().toString());
+
+        double res = database.insert(UserContract.Project.TABLE_NAME,null,cv);
+        if(res == 1){
+            System.out.println("successful db");
+        }
+        else
+            System.out.println("errors");
+        database.close();
+        userDBHandler.close();
 
     }
 }
