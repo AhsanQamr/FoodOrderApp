@@ -1,12 +1,14 @@
 package com.i192048.project;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -22,6 +25,11 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.i192048.project.Adapters.MainScreenAdapter;
 import com.i192048.project.Fragments.AddonsFragment;
 import com.i192048.project.Fragments.BurgerFragment;
@@ -30,6 +38,7 @@ import com.i192048.project.Fragments.ParathasFragment;
 import com.i192048.project.Fragments.PastasFragment;
 import com.i192048.project.Fragments.PizzaFragment;
 import com.i192048.project.Fragments.ShwarmaFragment;
+import com.i192048.project.Modals.User;
 import com.i192048.project.NavBActivity.CartActivity;
 import com.i192048.project.NavBActivity.FavoritesActivity;
 import com.i192048.project.NavBActivity.SearchActivity;
@@ -48,8 +57,15 @@ public class MainScreen extends AppCompatActivity {
     TabLayout tabLayout;
     ViewPager viewPager;
     BottomNavigationView bottomNavigationView;
+    TextView YourUserName,YourAddress;
+    FirebaseAuth mAuth;
+    FirebaseFirestore firestore;
+    String userID;
+    View headerView;
+    User user;
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,15 +78,23 @@ public class MainScreen extends AppCompatActivity {
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
         bottomNavigationView = findViewById(R.id.bottom_nav);
+        YourAddress = findViewById(R.id.your_address);
+        mAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
+        headerView = navigationView.getHeaderView(0);
+        YourUserName = (TextView) headerView.findViewById(R.id.your_user_name);
+        user = User.getInstance();
         /* Hooks End */
-
 
         toggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.bringToFront();
 
+        readDataFromDB();
         setViewPagerWithTab();
+        setBottomNavView();
+        setDrawerNavView();
 
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,9 +106,8 @@ public class MainScreen extends AppCompatActivity {
             }
         });
 
-        setBottomNavView();
-        setDrawerNavView();
     }
+
 
     private void setViewPagerWithTab(){
         tabLayout.setupWithViewPager(viewPager);
@@ -165,8 +188,29 @@ public class MainScreen extends AppCompatActivity {
     private void logoutFunctionality(){
         FirebaseAuth.getInstance().signOut();
         onBackPressed();
+        //startActivity(new Intent(MainScreen.this,Login.class));
         finish();
     }
 
+    private void readDataFromDB(){
+        userID = mAuth.getCurrentUser().getUid();
+        DocumentReference documentReference = firestore.collection("Users").document(userID);
+        documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+//                YourUserName.setText(value.getString("username"));
+                YourAddress.setText(value.getString("address"));
+                YourUserName.setText(value.getString("username"));
+                User user = User.getInstance();
+                user.setUsername(value.getString("username"));
+                user.setFull_name(value.getString("full_name"));
+                user.setEmail(value.getString("email"));
+                user.setPhone_num(value.getString("phone_num"));
+                user.setAddress(value.getString("address"));
+            }
+        });
+
+
+    }
 
 }

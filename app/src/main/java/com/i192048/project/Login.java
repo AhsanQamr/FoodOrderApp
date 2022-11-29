@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.i192048.project.Modals.User;
 
 public class Login extends AppCompatActivity {
 
@@ -110,4 +111,6 @@ public class Login extends AppCompatActivity {
             startActivity(new Intent(Login.this,MainScreen.class));
         }
     }
+
+
 }

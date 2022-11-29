@@ -8,8 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:fitsSystemWindows="true"
-    tools:context=".MainScreen"
-    tools:openDrawer="start">
+    tools:context=".MainScreen">
 <!--    tools:openDrawer="start">  remember to uncomment it-->
 
 
@@ -81,11 +80,11 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/your_address"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="8dp"
+                            android:layout_marginLeft="20dp"
                             android:layout_marginTop="5dp"
-                            android:text="Lincoln's Street, Palace, UK "
                             android:textColor="@color/white"
                             android:textSize="15dp" />
                     </LinearLayout>

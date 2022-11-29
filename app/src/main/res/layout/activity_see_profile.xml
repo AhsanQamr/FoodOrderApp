@@ -46,14 +46,14 @@
         android:textColor="#E64BEA"/>
 
     <TextView
+        android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginHorizontal="30dp"
-
         android:layout_marginTop="10dp"
         android:background="@drawable/roundedrectangle"
-        android:backgroundTint="@color/white"
-        android:text="foodbear@foodbear.com"
+        android:backgroundTint="#363636"
+        android:text="FoodBear"
         android:textSize="20dp"
         android:padding="5dp"
         android:textColor="@color/white" />
@@ -68,13 +68,13 @@
         android:textColor="#E64BEA"/>
 
     <TextView
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginHorizontal="30dp"
-
         android:layout_marginTop="10dp"
         android:background="@drawable/roundedrectangle"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="#363636"
         android:text="foodbear@foodbear.com"
         android:textSize="20dp"
         android:padding="5dp"
@@ -87,16 +87,18 @@
         android:layout_height="wrap_content"
         android:text="Full Name"
         android:textSize="17sp"
-        android:textColor="#E64BEA"/>
+        android:textColor="#E64BEA"
+        tools:ignore="DuplicateIds" />
 
     <TextView
+        android:id="@+id/fullname"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginHorizontal="30dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/roundedrectangle"
-        android:backgroundTint="@color/white"
-        android:text="foodbear@foodbear.com"
+        android:backgroundTint="#363636"
+        android:text="Full name"
         android:textSize="20dp"
         android:padding="5dp"
         android:textColor="@color/white" />
@@ -111,13 +113,14 @@
         android:textColor="#E64BEA"/>
 
     <TextView
+        android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginHorizontal="30dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/roundedrectangle"
-        android:backgroundTint="@color/white"
-        android:text="foodbear@foodbear.com"
+        android:backgroundTint="#363636"
+        android:text="Address"
         android:textSize="20dp"
         android:maxLines="2"
         android:padding="5dp"
@@ -133,13 +136,14 @@
         android:textColor="#E64BEA"/>
 
     <TextView
+        android:id="@+id/contact"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginHorizontal="30dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/roundedrectangle"
-        android:backgroundTint="@color/white"
-        android:text="foodbear@foodbear.com"
+        android:backgroundTint="#363636"
+        android:text="Contact"
         android:textSize="20dp"
         android:padding="5dp"
         android:textColor="@color/white" />

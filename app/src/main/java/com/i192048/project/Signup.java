@@ -1,5 +1,7 @@
 package com.i192048.project;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,12 +19,17 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.i192048.project.Modals.User;
+
+import java.util.Objects;
 
 public class Signup extends AppCompatActivity {
 
@@ -31,6 +38,9 @@ public class Signup extends AppCompatActivity {
     EditText email,password,name,username,phone,address;
     FirebaseAuth mAuth;
     ProgressDialog progressDialog;
+    FirebaseFirestore firestore;
+    DocumentReference reference;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +55,8 @@ public class Signup extends AppCompatActivity {
         username = findViewById(R.id.user_name);
         phone = findViewById(R.id.phone);
         address = findViewById(R.id.address);
+        firestore = FirebaseFirestore.getInstance();
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Creating Account");
         progressDialog.setMessage("Please wait while we create your account");
@@ -61,7 +73,8 @@ public class Signup extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 createUser();
-                addUserToDB();
+                //addUserToDB();
+                //addDataToUserClass();
             }
         });
 
@@ -101,6 +114,11 @@ public class Signup extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                                Log.d(TAG,"creation: "+userID.toString());
+                                User user = new User(name_field,username_field,phone_field,address_field,email_field,pass_field,userID);
+                                firestore.collection("Users").document(userID).set(user);
+                                Log.d(TAG, "onComplete: User added to user class");
                                 progressDialog.dismiss();
                                 Toast.makeText(Signup.this, "User registered", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(Signup.this, MainScreen.class));
@@ -123,25 +141,4 @@ public class Signup extends AppCompatActivity {
 
     }
 
-    private void addUserToDB(){
-        UserDBHandler userDBHandler = new UserDBHandler(Signup.this);
-        SQLiteDatabase database = userDBHandler.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(UserContract.Project._NAME,name.getText().toString());
-        cv.put(UserContract.Project._USERNAME,username.getText().toString());
-        cv.put(UserContract.Project._PHONE,phone.getText().toString());
-        cv.put(UserContract.Project._ADDRESS,address.getText().toString());
-        cv.put(UserContract.Project._EMAIL,email.getText().toString());
-        cv.put(UserContract.Project._PASSWORD,password.getText().toString());
-
-        double res = database.insert(UserContract.Project.TABLE_NAME,null,cv);
-        if(res == 1){
-            System.out.println("successful db");
-        }
-        else
-            System.out.println("errors");
-        database.close();
-        userDBHandler.close();
-
-    }
 }

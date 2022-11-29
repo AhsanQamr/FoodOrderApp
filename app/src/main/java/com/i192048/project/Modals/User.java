@@ -1,18 +1,41 @@
 package com.i192048.project.Modals;
 
-public class User {
-    String full_name,username,phone_num,address,email,password;
+import android.widget.EditText;
 
-    public User() {
+public class User {
+    String full_name,username,phone_num,address,email,password,u_id;
+
+    private User() {
+        this("","","","","","","");
     }
 
-    public User(String full_name, String username, String phone_num, String address, String email, String password) {
+    private static User user = new User();
+
+
+
+
+    public static User getInstance(){
+        if(user == null)
+            user = new User();
+        return user;
+    }
+
+    public String getU_id() {
+        return u_id;
+    }
+
+    public void setU_id(String u_id) {
+        this.u_id = u_id;
+    }
+
+    public User(String full_name, String username, String phone_num, String address, String email, String password, String u_id) {
         this.full_name = full_name;
         this.username = username;
         this.phone_num = phone_num;
         this.address = address;
         this.email = email;
         this.password = password;
+        this.u_id = u_id;
     }
 
     public String getFull_name() {

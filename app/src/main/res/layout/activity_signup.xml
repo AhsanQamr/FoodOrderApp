@@ -187,6 +187,7 @@
                 app:endIconMode="password_toggle"
                 app:endIconDrawable="@drawable/pass_hide"
                 android:textColorHint="#E64BEA"
+                app:endIconTint="#474744"
                 android:layout_height="55dp">
 
                 <EditText
