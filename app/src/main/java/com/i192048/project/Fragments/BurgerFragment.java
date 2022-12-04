@@ -1,29 +1,26 @@
 package com.i192048.project.Fragments;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
+import com.i192048.project.Adapters.BurgerAdapter;
+import com.i192048.project.Modals.FoodModal;
 import com.i192048.project.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BurgerFragment extends Fragment {
 
 
+    List<FoodModal> list;
     public BurgerFragment() {
         // Required empty public constructor
     }
@@ -31,23 +28,27 @@ public class BurgerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        // Inflate the layout for this fragment
+        RecyclerView burger_rv;
         View view = inflater.inflate(R.layout.fragment_burger, container, false);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
-        CardView cardView = view.findViewById(R.id.first_item);
-        cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDialog();
-            }
-        });
+        burger_rv = (RecyclerView) view.findViewById(R.id.burger_recycler_view);
+
+        list = new ArrayList<>();
+        list.add(new FoodModal("chicken jalapeno","500","good","hi"));
+        list.add(new FoodModal("chicken jalapeno","500","good","hi"));
+        list.add(new FoodModal("chicken jalapeno","500","good","hi"));
+        list.add(new FoodModal("chicken jalapeno","500","good","hi"));
+        list.add(new FoodModal("chicken jalapeno","500","good","hi"));
+        list.add(new FoodModal("chicken jalapeno","500","good","hi"));
+        list.add(new FoodModal("chicken jalapeno","500","good","hi"));
+
+        BurgerAdapter adapter = new BurgerAdapter(list,getContext());
+        //RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(BurgerFragment.this.getContext());
+        burger_rv.setLayoutManager(new LinearLayoutManager(getContext()));
+        //burger_rv.setLayoutManager(layoutManager);
+        burger_rv.setAdapter(adapter);
+
         return view;
     }
 
-    private void showDialog(){
-        Dialog dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.custom_dialog);
-        dialog.show();
-    }
+
 }

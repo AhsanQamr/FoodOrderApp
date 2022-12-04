@@ -26,7 +26,7 @@ import java.util.Map;
 public class EditProfileA extends AppCompatActivity {
 
     ImageView back;
-    EditText updateEmail,updateName,updateAddress,updateContact;
+    EditText updateEmail,updateName,updateAddress,updateContact,updateUserName;
     MaterialButton updateProfile;
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     String userID;
@@ -42,6 +42,7 @@ public class EditProfileA extends AppCompatActivity {
         updateName = findViewById(R.id.update_name);
         updateContact = findViewById(R.id.update_phone);
         updateProfile = findViewById(R.id.update_profile);
+        updateUserName = findViewById(R.id.update_user_name);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,26 +67,63 @@ public class EditProfileA extends AppCompatActivity {
         if(firebaseUser != null) {
             userID = firebaseUser.getUid();
 
+
+
             String update_email = updateEmail.getText().toString();
             String update_address = updateAddress.getText().toString();
             String update_name = updateName.getText().toString();
             String update_contact = updateContact.getText().toString();
-
-
-
-
+            String update_user_name = updateUserName.getText().toString();
 
             Map<String, Object> userMap = new HashMap<>();
-            userMap.put("email", update_email);
-            userMap.put("address", update_address);
-            userMap.put("full_name", update_name);
-            userMap.put("phone_num", update_contact);
-
             User user = User.getInstance();
+
+
+            if (updateName.getText().toString().isEmpty()) {
+                userMap.put("full_name", user.getFull_name());
+            }
+            else
+            {
+                userMap.put("full_name", update_name);
+            }
+            if(updateContact.getText().toString().isEmpty()){
+                userMap.put("phone_num", user.getPhone_num());
+            }
+            else
+            {
+                userMap.put("phone_num", update_contact);
+            }
+            if(updateAddress.getText().toString().isEmpty()){
+                userMap.put("address", user.getAddress());
+            }
+            else
+            {
+                userMap.put("address", update_address);
+            }
+            if(updateEmail.getText().toString().isEmpty()){
+                userMap.put("email", user.getEmail());
+            }
+            else
+            {
+                userMap.put("email", update_email);
+            }
+            if (updateUserName.getText().toString().isEmpty()) {
+                userMap.put("username", user.getUsername());
+            }
+            else
+            {
+                userMap.put("username", update_user_name);
+            }
+
+
             user.setEmail(update_email);
             user.setAddress(update_address);
             user.setFull_name(update_name);
             user.setPhone_num(update_contact);
+
+            System.out.println("User: " + user.getEmail() + " " + user.getFull_name() + " " + user.getAddress() + " " + user.getPhone_num());
+
+
 
             firestore.collection("Users").document(userID).update(userMap)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -95,7 +133,6 @@ public class EditProfileA extends AppCompatActivity {
                         }
                     });
         }
-
 
     }
 }
