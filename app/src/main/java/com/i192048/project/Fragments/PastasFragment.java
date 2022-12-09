@@ -76,9 +76,9 @@ public class PastasFragment extends Fragment {
                             //list.add(new FoodModal(map.get("Name").toString(), map.get("Price").toString(),map.get("Description").toString() ,map.get("Image").toString()));
                             list.add(new FoodModal(name, price, description, image));
                         }
+                    } else {
+                        Toast.makeText(getContext(), "No such document", Toast.LENGTH_SHORT).show();
                     }
-                    System.out.println("l" + list);
-                    System.out.println("data" + data);
 
                     PastasAdapter adapter = new PastasAdapter(list,getContext());
                     pastas_rv.setAdapter(adapter);

@@ -27,7 +27,7 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/food_image"
-                android:layout_width="300dp"
+                android:layout_width="290dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:paddingLeft="30dp"
@@ -36,15 +36,15 @@
                 android:paddingTop="5dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/pizza_image" />
-
             <ImageView
-                android:id="@+id/like_on_card"
+                android:id="@+id/remove_card"
                 android:paddingTop="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
+                android:layout_height="40dp"
                 android:layout_gravity="end"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/emptyfav" />
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/delete" />
+
 
         </LinearLayout>
 
@@ -67,14 +67,61 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/food_price"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="$50"
-                android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Quantity: "
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/purple_200"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/food_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text=" 1"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Size: "
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/purple_200"
+                    android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/food_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Size: "
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Price: "
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/purple_200"
+                    android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/food_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:text="50"/>
+            </LinearLayout>
+
+
 
         </LinearLayout>
     </LinearLayout>

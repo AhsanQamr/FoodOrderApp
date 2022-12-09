@@ -43,7 +43,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="* field not to be changed leave empty or unchanged"
+            android:text="* field not to be updated leave empty or unchanged"
             android:textColor="@color/teal_700"
             android:gravity="center"/>
 

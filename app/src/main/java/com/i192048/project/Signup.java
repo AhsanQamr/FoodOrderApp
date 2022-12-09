@@ -3,17 +3,22 @@ package com.i192048.project;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,8 +45,11 @@ public class Signup extends AppCompatActivity {
     ProgressDialog progressDialog;
     FirebaseFirestore firestore;
     DocumentReference reference;
+    ImageView userImage;
+    Uri imageUri;
     String userID;
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,10 +64,21 @@ public class Signup extends AppCompatActivity {
         phone = findViewById(R.id.phone);
         address = findViewById(R.id.address);
         firestore = FirebaseFirestore.getInstance();
+        userImage = findViewById(R.id.user_image);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Creating Account");
         progressDialog.setMessage("Please wait while we create your account");
+
+        userImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent,1);
+            }
+        });
 
         toLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,4 +160,12 @@ public class Signup extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
+            imageUri = data.getData();
+            userImage.setImageURI(imageUri);
+        }
+    }
 }

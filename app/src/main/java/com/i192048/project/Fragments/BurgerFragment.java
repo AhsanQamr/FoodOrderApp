@@ -1,5 +1,7 @@
 package com.i192048.project.Fragments;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,6 +22,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.i192048.project.Adapters.AddOnsAdapter;
 import com.i192048.project.Adapters.BurgerAdapter;
+import com.i192048.project.DetailsActivity;
 import com.i192048.project.Modals.FoodModal;
 import com.i192048.project.R;
 
@@ -34,10 +38,12 @@ public class BurgerFragment extends Fragment {
     FirebaseFirestore db;
     RecyclerView burger_rv;
     Map<String, Object> data = new HashMap<>();
+
     public BurgerFragment() {
         // Required empty public constructor
     }
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,6 +59,7 @@ public class BurgerFragment extends Fragment {
         return view;
     }
 
+
     private void fetchData(){
         // fetch data from maps stored in documents and add them to list
         db.collection("Foods").document("Burgers").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -67,14 +74,16 @@ public class BurgerFragment extends Fragment {
                             Map<String, Object> map = (Map<String, Object>) entry.getValue();
                             String name = (String) map.get("Name");
                             String price = (String) map.get("Price");
+                            String price2 = (String) map.get("price2");
+                            String price3 = (String) map.get("price3");
                             String image = (String) map.get("Image");
                             String description = (String) map.get("Description");
-                            list.add(new FoodModal(name, price, description, image));
+
+                            list.add(new FoodModal(name, price, description, image, price2, price3));
                             //list.add(new FoodModal(map.get("Name").toString(), map.get("Price").toString(),map.get("Description").toString() ,map.get("Image").toString()));
                         }
+
                     }
-                    System.out.println("l" + list);
-                    System.out.println("data" + data);
 
                     BurgerAdapter adapter = new BurgerAdapter(list,getContext());
                     burger_rv.setAdapter(adapter);
@@ -86,6 +95,10 @@ public class BurgerFragment extends Fragment {
                 Toast.makeText(getContext(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void fetchItem(){
+
     }
 
 

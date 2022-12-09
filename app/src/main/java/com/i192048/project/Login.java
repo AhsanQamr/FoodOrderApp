@@ -31,6 +31,7 @@ public class Login extends AppCompatActivity {
     FirebaseAuth mAuth;
     ProgressDialog progressDialog;
     Button forgotPassword;
+    Button upload;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -46,6 +47,7 @@ public class Login extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Logging in");
         forgotPassword = findViewById(R.id.forgot_password);
+        upload = findViewById(R.id.upload);
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +70,16 @@ public class Login extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Login.this,Upload.class);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     private void loginUser(){

@@ -70,10 +70,13 @@ public class PizzaFragment extends Fragment {
                             Map<String, Object> map = (Map<String, Object>) entry.getValue();
                             String name = (String) map.get("Name");
                             String price = (String) map.get("Price");
+                            String price2 = (String) map.get("price2");
+                            String price3 = (String) map.get("price3");
                             String image = (String) map.get("Image");
                             String description = (String) map.get("Description");
                             //list.add(new FoodModal(map.get("Name").toString(), map.get("Price").toString(),map.get("Description").toString() ,map.get("Image").toString()));
-                            list.add(new FoodModal(name, price, description, image));
+                            list.add(new FoodModal(name, price, description, image,price2,price3));
+
                         }
                     }
                     System.out.println("l" + list);
