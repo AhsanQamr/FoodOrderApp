@@ -18,8 +18,10 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.i192048.project.DetailsActivity;
 import com.i192048.project.Modals.FoodModal;
 import com.i192048.project.R;
@@ -32,9 +34,10 @@ import java.util.Map;
 public class BurgerAdapter extends RecyclerView.Adapter<BurgerAdapter.BurgerViewHolder> {
     List<FoodModal> ls;
     Context context;
-    boolean liked = false;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<String, Object> data = new HashMap<>();
+
     public BurgerAdapter(List<FoodModal> ls, Context context) {
         this.ls = ls;
         this.context = context;
@@ -43,7 +46,7 @@ public class BurgerAdapter extends RecyclerView.Adapter<BurgerAdapter.BurgerView
     @NonNull
     @Override
     public BurgerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.foodview,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.foodview, parent, false);
         return new BurgerViewHolder(view);
     }
 
@@ -55,16 +58,33 @@ public class BurgerAdapter extends RecyclerView.Adapter<BurgerAdapter.BurgerView
         //holder.food_description.setText(ls.get(position).getB_description());
         Glide.with(context).load(ls.get(position).getF_image()).into(holder.food_image);
 
+        // check in favorites to update image resource
+        db.collection("Favorites").document(mAuth.getCurrentUser().getUid()).collection("UserFavorites").whereEqualTo("f_name", ls.get(position).getF_name()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    if (task.getResult().size() > 0) {
+                        holder.likeOnCard.setImageResource(R.drawable.favourite);
+                    } else {
+                        holder.likeOnCard.setImageResource(R.drawable.emptyfav);
+                    }
+                }
+            }
+        });
+
+
+
+
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, DetailsActivity.class);
-                intent.putExtra("name",ls.get(position).getF_name());
-                intent.putExtra("price",ls.get(position).getF_price());
-                intent.putExtra("image",ls.get(position).getF_image());
-                intent.putExtra("description",ls.get(position).getF_description());
-                intent.putExtra("price2",ls.get(position).getF_price2());
-                intent.putExtra("price3",ls.get(position).getF_price3());
+                intent.putExtra("name", ls.get(position).getF_name());
+                intent.putExtra("price", ls.get(position).getF_price());
+                intent.putExtra("image", ls.get(position).getF_image());
+                intent.putExtra("description", ls.get(position).getF_description());
+                intent.putExtra("price2", ls.get(position).getF_price2());
+                intent.putExtra("price3", ls.get(position).getF_price3());
                 context.startActivity(intent);
             }
         });
@@ -72,17 +92,22 @@ public class BurgerAdapter extends RecyclerView.Adapter<BurgerAdapter.BurgerView
         holder.likeOnCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(liked == false){
-                    holder.likeOnCard.setImageResource(R.drawable.favourite);
-                    liked = true;
-                }
-                else{
-                    holder.likeOnCard.setImageResource(R.drawable.emptyfav);
-                    liked = false;
-                }
+                db.collection("Favorites").document(mAuth.getCurrentUser().getUid()).collection("UserFavorites").whereEqualTo("f_name", ls.get(position).getF_name()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if (task.getResult().isEmpty()) {
+                                holder.likeOnCard.setImageResource(R.drawable.favourite);
+                                addToFavorites(ls.get(position).getF_name(), ls.get(position).getF_price(), ls.get(position).getF_image());
+                            } else {
+                                holder.likeOnCard.setImageResource(R.drawable.emptyfav);
+                                removeFromFavorites(ls.get(position).getF_name());
+                            }
+                        }
+                    }
+                });
             }
         });
-
 
 
     }
@@ -94,9 +119,11 @@ public class BurgerAdapter extends RecyclerView.Adapter<BurgerAdapter.BurgerView
 
     public class BurgerViewHolder extends RecyclerView.ViewHolder {
         ImageView food_image;
-        TextView food_name,food_price;
+        TextView food_name, food_price;
         ImageView likeOnCard;
         CardView cardView;
+
+
         public BurgerViewHolder(@NonNull View itemView) {
             super(itemView);
             food_image = itemView.findViewById(R.id.food_image);
@@ -108,31 +135,44 @@ public class BurgerAdapter extends RecyclerView.Adapter<BurgerAdapter.BurgerView
         }
     }
 
-    private String fetchFavorite(){
-        // fetch data from maps stored in documents and add them to list
-        final String[] favorite = new String[1];
-        db.collection("Foods").document("Burgers").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        data = document.getData();
-                        assert data != null;
-                        for (Map.Entry<String, Object> entry : data.entrySet()) {
-                            Map<String, Object> map = (Map<String, Object>) entry.getValue();
-                            favorite[0] = (String) map.get("Favorite");
-                            System.out.println(favorite[0]);
-                            //list.add(new FoodModal(map.get("Name").toString(), map.get("Price").toString(),map.get("Description").toString() ,map.get("Image").toString()));
-                        }
 
-                    }
+    private void addToFavorites(String foodName,String foodPrice,String foodImage) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        data.put("f_name",foodName );
+        data.put("f_price", foodPrice);
+        data.put("f_image", foodImage);
+
+        db.collection("Favorites").document(mAuth.getCurrentUser().getUid()).collection("UserFavorites").document(foodName).set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(context, "Added to Favorites", Toast.LENGTH_SHORT).show();
                 }
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, "Failed to add to Favorites", Toast.LENGTH_SHORT).show();
+            }
         });
-        return favorite[0];
     }
 
+    private void removeFromFavorites(String foodName) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        db.collection("Favorites").document(mAuth.getCurrentUser().getUid()).collection("UserFavorites").document(foodName).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(context, "Removed from Favorites", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, "Failed to remove from Favorites", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 }
 

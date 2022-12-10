@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -67,7 +68,8 @@ public class DetailsActivity extends AppCompatActivity implements AdapterView.On
             @Override
             public void onClick(View view) {
                   //addDataToCart();
-                  addToCart();
+                Snackbar.make(view, "Added to Cart", Snackbar.LENGTH_LONG).show();
+                addToCart();
 
             }
         });
@@ -179,8 +181,8 @@ public class DetailsActivity extends AppCompatActivity implements AdapterView.On
     }
 
     private void setData(){
-        //image.setImageResource(Integer.parseInt(b_image));
-        //Picasso.get().load(b_image).into(image);
+        //image.setImageResource(b_image);
+        Picasso.get().load(b_image).into(image);
         name.setText(b_name);
         description.setText(b_description);
         price.setText(b_price);
@@ -206,7 +208,7 @@ public class DetailsActivity extends AppCompatActivity implements AdapterView.On
         db.collection("Cart").document(uid).collection("UserCart").document(b_name).set(cart).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(DetailsActivity.this, "Added to cart", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(DetailsActivity.this, "Added to cart", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

@@ -56,7 +56,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.price.setText(cart.getPrice());
         holder.quantity.setText(cart.getQuantity());
         holder.size.setText(cart.getSize());
-        //Picasso.get().load(cart.getImage()).into(holder.image);
+        Picasso.get().load(cart.getImage()).into(holder.image);
 
         int count = getItemCount();
         int sum =0;
@@ -77,6 +77,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 cartList.remove(position);
                 deleteCartFromFirebase(cart.getName());
                 notifyDataSetChanged();
+                // update sum value to 0 for last item
+                if (cartList.size() == 0) {
+                    Intent intent = new Intent("MyData");
+                    intent.putExtra("sum", "0");
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+                }
                 //LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
         });
@@ -111,14 +117,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         FirebaseAuth auth;
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
-        // delete sub document from cart;
 
         db.collection("Cart").document(Objects.requireNonNull(auth.getCurrentUser()).getUid()).collection("UserCart").document(name).delete()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
-                            Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Deleted from Cart", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {

@@ -56,6 +56,8 @@ public class Upload extends AppCompatActivity {
             }
         });
 
+
+
     }
 
     @Override
@@ -77,7 +79,15 @@ public class Upload extends AppCompatActivity {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         // get url of image
-                        Toast.makeText(Upload.this, "file uploaded", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Upload.this, "file uploaded", Toast.LENGTH_SHORT).show();
+                        imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String url = uri.toString();
+                                Toast.makeText(Upload.this, "url: " + url, Toast.LENGTH_SHORT).show();
+                                System.out.println("url: " + url);
+                            }
+                        });
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -88,17 +98,7 @@ public class Upload extends AppCompatActivity {
                 });
     }
 
-    private void addtoFirebase(){
-        // add image url to firebase
-        storageReference.child("images/").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                String url = uri.toString();
-                System.out.println(url);
 
-            }
-        });
-    }
 
 }
 

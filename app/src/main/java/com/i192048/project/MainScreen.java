@@ -129,7 +129,7 @@ public class MainScreen extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 drawerLayout.closeDrawers();
-                int itemId = item.getItemId();
+                //int itemId = item.getItemId();
 
                 switch (item.getItemId()){
                     case R.id.see_profile:

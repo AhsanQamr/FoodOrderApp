@@ -6,6 +6,7 @@ import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
@@ -27,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.i192048.project.Adapters.CartAdapter;
+import com.i192048.project.Final;
 import com.i192048.project.Modals.Cart;
 import com.i192048.project.Modals.Order;
 import com.i192048.project.R;
@@ -54,6 +56,7 @@ public class CartActivity extends AppCompatActivity {
     FirebaseFirestore db;
     String sum = "0";
     MaterialButton checkout;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -61,13 +64,23 @@ public class CartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
-        cardView = findViewById(R.id.just_touch);
+        //cardView = findViewById(R.id.just_touch);
         cart_recycler = findViewById(R.id.cart_recycler);
         back = findViewById(R.id.back);
         db = FirebaseFirestore.getInstance();
         itemTotal = findViewById(R.id.item_total);
         total = findViewById(R.id.total);
         checkout = findViewById(R.id.checkout);
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh);
+
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                finish();
+                startActivity(getIntent());
+            }
+        });
 
 
         OneSignalSetup();
@@ -89,12 +102,12 @@ public class CartActivity extends AppCompatActivity {
 
 
 
-
         checkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if(total.getText().toString().equals("0") || list.size()==0) {
-                    Toast.makeText(CartActivity.this, "Cart is empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CartActivity.this, "Cart is empty, Please refresh in case of glitch ", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String deviceID = OneSignal.getDeviceState().getUserId();
@@ -105,6 +118,12 @@ public class CartActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 addToOrders();
+                CartAdapter adapter = new CartAdapter(list, CartActivity.this);
+                for(int i=0;i<list.size();i++){
+                    adapter.deleteCartFromFirebase(list.get(i).getName());
+                }
+                finish();
+                startActivity(new Intent(CartActivity.this, Final.class));
             }
         });
 
@@ -131,6 +150,7 @@ public class CartActivity extends AppCompatActivity {
                 Toast.makeText(CartActivity.this, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
 
@@ -138,10 +158,7 @@ public class CartActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             sum = intent.getStringExtra("sum");
-            System.out.println("Sum recieved: "+sum);
-            if(list.isEmpty()) {
-                sum = "0";
-            }
+            System.out.println("Sum received: "+sum);
             itemTotal.setText("Rs: "+sum);
             calculateTotal(sum);
 
@@ -152,8 +169,9 @@ public class CartActivity extends AppCompatActivity {
         int total = 0;
         int deliveryCharge = 30;
         int gst = 17;
-        if(Integer.parseInt(value) == 0)
+        if(Integer.parseInt(value) == 0 ){
             total = 0;
+        }
         else
             total += Integer.parseInt(value) + deliveryCharge + (gst * Integer.parseInt(value)/100);
 
