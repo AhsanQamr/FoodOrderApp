@@ -85,7 +85,7 @@ public class Upload extends AppCompatActivity {
                             public void onSuccess(Uri uri) {
                                 String url = uri.toString();
                                 Toast.makeText(Upload.this, "url: " + url, Toast.LENGTH_SHORT).show();
-                                System.out.println("url: " + url);
+                                //System.out.println("url: " + url);
                             }
                         });
 

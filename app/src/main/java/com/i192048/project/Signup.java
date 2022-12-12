@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Api;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,9 +33,22 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.i192048.project.Modals.User;
 
+import java.io.IOException;
 import java.util.Objects;
+import java.util.UUID;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Signup extends AppCompatActivity {
 
@@ -48,6 +62,7 @@ public class Signup extends AppCompatActivity {
     ImageView userImage;
     Uri imageUri;
     String userID;
+
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -76,7 +91,7 @@ public class Signup extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent,1);
+                startActivityForResult(Intent.createChooser(intent,"Select Image"),1);
             }
         });
 
@@ -92,8 +107,6 @@ public class Signup extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 createUser();
-                //addUserToDB();
-                //addDataToUserClass();
             }
         });
 
@@ -135,12 +148,81 @@ public class Signup extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
                                 Log.d(TAG,"creation: "+userID.toString());
-                                User user = new User(name_field,username_field,phone_field,address_field,email_field,pass_field,userID);
-                                firestore.collection("Users").document(userID).set(user);
-                                Log.d(TAG, "onComplete: User added to user class");
-                                progressDialog.dismiss();
-                                Toast.makeText(Signup.this, "User registered", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(Signup.this, MainScreen.class));
+
+                                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                                StorageReference ref = storageReference.child("images/"+ UUID.randomUUID().toString());
+                                ref.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                String imageUrl = uri.toString();
+                                                Log.d(TAG, "onSuccess: "+ imageUrl);
+
+                                                // add ip address to okhttp client
+
+
+                                                System.out.println(4);
+                                                OkHttpClient client = new OkHttpClient();
+                                                System.out.println(3);
+                                                RequestBody body = new FormBody.Builder()
+                                                        .add("email",email_field)
+                                                        .add("image",imageUrl)
+                                                        .build();
+                                                System.out.println(1);
+                                                Request request = new Request.Builder()
+                                                        .url("http://192.168.18.65:5000/postImage").post(body).build();
+                                                System.out.println(2);
+                                                client.newCall(request).enqueue(new Callback() {
+                                                    @Override
+                                                    public void onFailure(Call call, IOException e) {
+                                                        Log.d(TAG, "onFailure: "+e.getMessage());
+                                                        e.printStackTrace();
+                                                    }
+
+                                                    @Override
+                                                    public void onResponse(Call call, Response response) throws IOException {
+                                                        if(response.isSuccessful()){
+                                                            String resp = response.body().string();
+                                                            Log.d(TAG, "onResponse: "+response.body().string());
+
+
+                                                            if(resp.contains("success")){
+                                                                Log.d("Response", resp);
+                                                                progressDialog.dismiss();
+                                                                User user = new User(name_field,username_field,phone_field,address_field,email_field,pass_field,userID);
+                                                                firestore.collection("Users").document(userID).set(user);
+                                                                Log.d(TAG, "onComplete: User added to user class");
+                                                                response.close();
+                                                                //Toast.makeText(Signup.this, "User registered", Toast.LENGTH_SHORT).show();
+                                                                startActivity(new Intent(Signup.this, MainScreen.class));
+                                                            }
+                                                            else{
+                                                                Log.d("Response", resp);
+                                                                progressDialog.dismiss();
+                                                                response.close();
+                                                                runOnUiThread(()-> Toast.makeText(Signup.this, "Some error Occurred", Toast.LENGTH_SHORT).show());
+                                                            }
+                                                        }
+
+
+
+
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(Signup.this, "Failed to upload image", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+
+
                             } else {
                                 progressDialog.dismiss();
                                 if (task.getException() instanceof FirebaseAuthUserCollisionException)
@@ -168,4 +250,14 @@ public class Signup extends AppCompatActivity {
             userImage.setImageURI(imageUri);
         }
     }
+
+
+
+
+    private String getImageUrl(){
+        final String[] imageUrl = {""};
+
+        return imageUrl[0];
+    }
+
 }

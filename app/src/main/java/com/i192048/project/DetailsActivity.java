@@ -68,7 +68,7 @@ public class DetailsActivity extends AppCompatActivity implements AdapterView.On
             @Override
             public void onClick(View view) {
                   //addDataToCart();
-                Snackbar.make(view, "Added to Cart", Snackbar.LENGTH_LONG).show();
+
                 addToCart();
 
             }
@@ -197,6 +197,8 @@ public class DetailsActivity extends AppCompatActivity implements AdapterView.On
             Toast.makeText(this, "Please Select Valid Item", Toast.LENGTH_SHORT).show();
             return;
         }
+        Snackbar.make(add_to_cart,"Added to Cart",Snackbar.LENGTH_SHORT).show();
+        //Snackbar.make(view, "Added to Cart", Snackbar.LENGTH_LONG).show();
         Map<String,Object> cart = new HashMap<>();
         cart.put("name",b_name);
         cart.put("price",myPrice);

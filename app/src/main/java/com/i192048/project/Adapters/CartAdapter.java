@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -56,7 +57,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         holder.price.setText(cart.getPrice());
         holder.quantity.setText(cart.getQuantity());
         holder.size.setText(cart.getSize());
-        Picasso.get().load(cart.getImage()).into(holder.image);
+        //Picasso.get().load(cart.getImage()).into(holder.image);
+        Glide.with(context).load(cart.getImage()).into(holder.image);
 
         int count = getItemCount();
         int sum =0;

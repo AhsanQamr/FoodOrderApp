@@ -28,6 +28,8 @@ public class User {
         this.u_id = u_id;
     }
 
+
+
     public User(String full_name, String username, String phone_num, String address, String email, String password, String u_id) {
         this.full_name = full_name;
         this.username = username;

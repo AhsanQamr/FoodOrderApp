@@ -65,6 +65,7 @@
                     android:layout_height="55dp"
                     android:background="@drawable/roundedrectangle"
                     android:hint="Full Name"
+                    android:text="Ahsan Qamar"
                     android:inputType="text"
                     android:textColor="@color/black"/>
 
@@ -90,6 +91,7 @@
                     android:layout_height="55dp"
                     android:background="@drawable/roundedrectangle"
                     android:hint="User Name"
+                    android:text="ahsan"
                     android:inputType="text"
                     android:textColor="@color/black"/>
 
@@ -115,6 +117,7 @@
                     android:layout_height="55dp"
                     android:background="@drawable/roundedrectangle"
                     android:hint="Phone Number"
+                    android:text="0300-0000000"
                     android:inputType="number"
                     android:textColor="@color/black"/>
 
@@ -139,6 +142,7 @@
                     android:layout_height="55dp"
                     android:background="@drawable/roundedrectangle"
                     android:hint="Address"
+                    android:text="Lahore"
                     android:inputType="text"
                     android:textColor="@color/black"
                     >
@@ -197,6 +201,7 @@
                     android:layout_height="55dp"
                     android:background="@drawable/roundedrectangle"
                     android:hint="Password"
+                    android:text="someone"
                     android:inputType="textPassword"
                     android:textColor="@color/black"/>
 
